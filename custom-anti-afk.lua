@@ -6,7 +6,6 @@ local PSXPID = {
 }
 
 if table.find(PSXPID, game.PlaceId) then
-	print("true")
 	repeat task.wait() until game.Players.LocalPlayer
 	repeat task.wait() until game.Players.LocalPlayer.Character ~= nil
 	repeat task.wait() until workspace:FindFirstChild("__MAP")
@@ -103,6 +102,64 @@ local function VIYFKQE_fake_script() -- TextLabel.LocalScript
 	end)
 end
 coroutine.wrap(VIYFKQE_fake_script)()
+local function KPSOQKL_fake_script() -- TextLabel.LocalScript 
+	local script = Instance.new('LocalScript', Frame)
+
+	local UserInputService = game:GetService("UserInputService")
+	local runService = (game:GetService("RunService"));
+
+	local gui = script.Parent
+
+	local dragging
+	local dragInput
+	local dragStart
+	local startPos
+
+	function Lerp(a, b, m)
+		return a + (b - a) * m
+	end;
+
+	local lastMousePos
+	local lastGoalPos
+	local DRAG_SPEED = (8); -- // The speed of the UI darg.
+	function Update(dt)
+		if not (startPos) then return end;
+		if not (dragging) and (lastGoalPos) then
+			gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, lastGoalPos.X.Offset, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, lastGoalPos.Y.Offset, dt * DRAG_SPEED))
+			return 
+		end;
+	
+		local delta = (lastMousePos - UserInputService:GetMouseLocation())
+		local xGoal = (startPos.X.Offset - delta.X);
+		local yGoal = (startPos.Y.Offset - delta.Y);
+		lastGoalPos = UDim2.new(startPos.X.Scale, xGoal, startPos.Y.Scale, yGoal)
+		gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, xGoal, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, yGoal, dt * DRAG_SPEED))
+	end;
+	
+	gui.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = gui.Position
+			lastMousePos = UserInputService:GetMouseLocation()
+	
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+	
+	gui.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	runService.Heartbeat:Connect(Update)
+end
+coroutine.wrap(KPSOQKL_fake_script)()
 local function CTIJVK_fake_script() -- TextLabel_3.LocalScript 
 	local script = Instance.new('LocalScript', TextLabel_3)
 
@@ -168,3 +225,107 @@ local function YLOYR_fake_script() -- AFK.LocalScript
 	end)
 end
 coroutine.wrap(YLOYR_fake_script)()
+
+
+-- [[ fnl example ]] --
+
+-- Import the Library
+local fnl = loadstring(game:HttpGetAsync 'https://raw.githubusercontent.com/Code1Tech/utils/main/notification.lua')()
+
+-- Make a Notification function
+function notify(title, text, duration)
+  title = title or "Notification"
+  text = text or "No text provided."
+  duration = duration or 5
+  
+  fnl:MakeNotification({
+    Title = title,
+    Text = text,
+    Duration = duration
+  })
+end
+
+-- Use the func
+local Players = game:GetService("Players")
+local GroupId = 5060810
+
+Players.PlayerAdded:Connect(function(Player)
+	if(Player:IsInGroup(GroupId)) then
+		local PlaceID = game.PlaceId
+		local AllIDs = {}
+		local foundAnything = ""
+		local actualHour = os.date("!*t").hour
+		local Deleted = false
+		local File = pcall(function()
+			AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NewNotSameServers.json"))
+		end)
+		if not File then
+			table.insert(AllIDs, actualHour)
+			writefile("NewNotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+		end
+		function TPReturner()
+			local Site;
+			if foundAnything == "" then
+				Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100'))
+			else
+				Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Desc&limit=100&cursor=' .. foundAnything))
+			end
+			local ID = ""
+			if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
+				foundAnything = Site.nextPageCursor
+			end
+			local num = 0;
+			for i,v in pairs(Site.data) do
+				local Possible = true
+				ID = tostring(v.id)
+				if tonumber(v.maxPlayers) > tonumber(v.playing) then
+					for _,Existing in pairs(AllIDs) do
+						if num ~= 0 then
+							if ID == tostring(Existing) then
+								Possible = false
+							end
+						else
+							if tonumber(actualHour) ~= tonumber(Existing) then
+								local delFile = pcall(function()
+									delfile("NewNotSameServers.json")
+									AllIDs = {}
+									table.insert(AllIDs, actualHour)
+								end)
+							end
+						end
+						num = num + 1
+					end
+					if Possible == true then
+						table.insert(AllIDs, ID)
+						wait()
+						pcall(function()
+							writefile("NewNotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
+							wait()
+							game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
+						end)
+						wait(4)
+					end
+				end
+			end
+		end
+    
+		function Teleport()
+			while wait() do
+				pcall(function()
+					TPReturner()
+					if foundAnything ~= "" then
+						TPReturner()
+					end
+				end)
+			end
+		end
+    
+		Teleport()	
+	end
+end)
+
+notify("Anti - AFK", "Activated! Press the Home Key to hide or show the ui.", 5)
+if table.find(PSXPID, game.PlaceId) then
+	task.wait(2)
+	notify("Anti - AFK (PSX)", "You will be rejoined in a different server if a game moderator joins!", 5)
+end
