@@ -4,6 +4,8 @@ function FormatNumber(n)
     return minus .. int:reverse():gsub("^,", "") .. fraction
 end
 
+
+
 local SessionEarned = 0
 
 task.spawn(function()
@@ -20,8 +22,6 @@ task.spawn(function()
             ["embeds"] = {
                 {
                     ["title"] = "Diamond Webhook",
-		            ["username"] = "Mystic Mine",
-		            ["avatar_url"] = "https://pbs.twimg.com/media/FuSnDAEaYAAzdGr.png",
                     ["description"] = "You made **" .. FormatNumber(TotalEarned) .. "** in 3600s!",
                     ["type"] = "rich",
                     ["color"] = tonumber(0x7269da),
@@ -45,6 +45,8 @@ task.spawn(function()
 		            }
                 }
             }
+			["username"] = "Mystic Mine",
+			["avatar_url"] = "https://pbs.twimg.com/media/FuSnDAEaYAAzdGr.png",
         }
         local newdata = game:GetService("HttpService"):JSONEncode(data)
         
