@@ -214,7 +214,7 @@ local function YLOYR_fake_script() -- AFK.LocalScript
 	
 	UserInputService.InputBegan:Connect(function(key)
 		if key.UserInputType == Enum.UserInputType.Keyboard then
-			if key.KeyCode == Enum.KeyCode.Home then
+			if key.KeyCode == Enum.KeyCode.Delete then
 				if myUI.Enabled == true then
 					myUI.Enabled = false
 				else
