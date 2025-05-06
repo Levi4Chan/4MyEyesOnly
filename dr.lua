@@ -1,9 +1,6 @@
 if not game:IsLoaded() then
-    local notLoaded = Instance.new("Message")
-    notLoaded.Parent = COREGUI
-    notLoaded.Text = "Infinite Yield is waiting for the game to load"
+    print("Waiting to load...")
     game.Loaded:Wait()
-    notLoaded:Destroy()
 end
 
 task.wait(20)
