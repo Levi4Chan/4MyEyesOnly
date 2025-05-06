@@ -6,6 +6,9 @@ local Players = game:GetService("Players")
 
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if queueteleport then
+		print("Teleporting...")
 		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Levi4Chan/4MyEyesOnly/refs/heads/main/dr.lua'))()")
 	end
 end)
+
+print("Loaded.")
