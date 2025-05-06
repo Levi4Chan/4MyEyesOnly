@@ -3,8 +3,6 @@ if not game:IsLoaded() then
     game.Loaded:Wait()
 end
 
-task.wait(10)
-
 script_key="wFbDSAywfobaCIGkaKixLnibwcJHFbgL";
 (loadstring or load)(game:HttpGet("https://getnative.cc/script/loader"))()
 
